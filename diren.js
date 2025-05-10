@@ -122,18 +122,18 @@ function checkTurretCollision(bullet) {
                 // 判断是否所有小圆圈都消失
                 if (turret.miniCircles.every(c => !c)) {
                     turrets.splice(i, 1);
-                    if (typeof window.addScore === 'function') window.addScore(100); // 击杀炮台时加分
+                    return 'killed'; // 返回击杀状态
                 }
                 // 命中但未全部消灭时不加分
-                return true;
+                return 'hit';
             } else {
                 turret.health--;
                 if (turret.health <= 0) {
                     turrets.splice(i, 1);
-                    if (typeof window.addScore === 'function') window.addScore(100); // 击杀炮台时加分
+                    return 'killed';
                 }
             }
-            return true;
+            return 'hit';
         }
     }
     return false;
@@ -182,6 +182,13 @@ function updateTurretsAndBullets(player, now, onPlayerHit) {
     }
 }
 
+// 新增：重置炮台敌人和子弹的函数
+function resetTurrets() {
+    turrets = [];
+    turretBullets = [];
+    lastTurretSpawn = 0;
+    lastTurretFire = 0;
+}
 // 玩家掉落动画
 function playerDrop(player, callback) {
     const startY = player.y;

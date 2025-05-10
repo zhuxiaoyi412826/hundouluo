@@ -248,11 +248,13 @@ function updateEnemies() {
 function checkCollisions() {
     // 子弹与炮台碰撞
     bullets.forEach((bullet, index) => {
-        if (window.turretModule?.checkTurretCollision(bullet)) {
+        const result = window.turretModule?.checkTurretCollision(bullet);
+        if (result === 'hit' || result === 'killed') {
             bullets.splice(index, 1);
-            // 击中圆形炮台奖励1000分
-            score += 1000;
-            scoreElement.textContent = `分数: ${score}`;
+            if (result === 'killed') {
+                score += 1000;
+                scoreElement.textContent = `分数: ${score}`;
+            }
         }
     });
     // 子弹与敌人碰撞
@@ -385,33 +387,20 @@ function gameOver() {
 }
 
 // 重置游戏
+// 新增：重置游戏函数，包含炮台重置
 function resetGame() {
     score = 0;
     lives = 3;
+    livesElement.textContent = `生命: ${lives}`;
+    gameRunning = true;
     bullets = [];
     enemies = [];
     enemySpawnTimer = 0;
-    lastShotTime = 0;
-    lastShotFrame = 0; // 新增：重置帧计数
-    frameCount = 0; // 新增：重置帧计数
-    gameRunning = true;
-    canvas.onclick = null;
-    
-    // 重置玩家位置
-    player.x = 100;
-    player.y = 300;
-    player.direction = 'right';
-    player.isShooting = false;
-    
-    // 重置UI
-    scoreElement.textContent = `分数: 0`;
-    livesElement.textContent = `生命: 3`;
-    
-    // 重新开始音乐
-    bgMusic.currentTime = 0;
-    bgMusic.play();
-    
-    // 重新开始游戏循环
+    frameCount = 0;
+    lastShotFrame = 0;
+    // 重置炮台敌人和子弹
+    if (typeof resetTurrets === 'function') resetTurrets();
+    // 重新开始主循环
     gameLoop();
 }
 
@@ -571,3 +560,14 @@ class Enemy {
         return this.x < -this.width;
     }
 }
+// 修改“开始游戏”按钮事件，调用resetGame而不是直接gameLoop
+window.onload = function() {
+    var startPanel = document.getElementById('start-panel');
+    var startBtn = document.getElementById('start-btn');
+    if(startBtn && startPanel) {
+        startBtn.onclick = function() {
+            startPanel.style.display = 'none';
+            if(typeof resetGame === 'function') resetGame();
+        };
+    }
+};
