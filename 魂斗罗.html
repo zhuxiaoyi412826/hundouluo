@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易魂斗罗</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas" width="800" height="400"></canvas>
+        <div id="score">分数: 0</div>
+        <div id="lives">生命: 3</div>
+        <div id="start-panel" class="start-panel">
+            <div class="start-panel1" >
+                这个极简版魂斗罗<br>请开始游戏
+            </div>
+            <button id="start-btn" class="start-panel2">开始游戏</button>
+        </div>
+        <button id="shoot-btn" class="game-btn">射击</button>
+        <audio id="bg-music" src="./resourecs/BG.mp3" loop autoplay></audio>
+        <audio id="shoot-audio" src="./resourecs/1.wav" preload="auto"></audio>
+    </div>
+
+   
+    
+</body>
+<script src="index.js"></script>
+<script src="diren.js"></script>
+<script>
+window.onload = function() {
+    var startPanel = document.getElementById('start-panel');
+    var startBtn = document.getElementById('start-btn');
+    if(startBtn && startPanel) {
+        startBtn.onclick = function() {
+            startPanel.style.display = 'none';
+            if(typeof gameLoop === 'function') gameLoop();
+        };
+    }
+};
+</script>
+</html>
+
+
